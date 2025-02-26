@@ -1,5 +1,5 @@
-
-n to calculate the mean and covariance of a dataset"""
+#!/usr/bin/env python3
+"""Function to calculate the mean and covariance of a dataset"""
 
 
 import numpy as np
