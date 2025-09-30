@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Defines a function that calculates the positional encoding for a transformer
@@ -41,4 +40,3 @@ def positional_encoding(max_seq_len, dm):
             # cos for odd indices of positional_encoding
             positional_encoding[pos, i + 1] = np.cos(get_angle(pos, i, dm))
     return positional_encoding
-
