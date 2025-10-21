@@ -54,18 +54,16 @@ def baum_welch(Observations, Transition, Emission, Initial,
     iterations: number of times expectation-maximization should be performed
     Returns: the converged Transition, Emission, or None, None on failure
     """
-    if (not isinstance(Observations, np.ndarray) or
-            len(Observations.shape) != 1):
+    if not isinstance(Observations, np.ndarray) or len(Observations.shape) != 1:
         return None, None
 
-    if (not isinstance(Transition, np.ndarray) or
-            len(Transition.shape) != 2):
+    if not isinstance(Transition, np.ndarray) or len(Transition.shape) != 2:
         return None, None
 
     if not isinstance(Emission, np.ndarray) or len(Emission.shape) != 2:
         return None, None
 
-    if not isinstance(Initial, np.ndarray) or len(Initial.shape) != 2:
+    if not isinstance(Initial, np.ndarray):
         return None, None
 
     if not isinstance(iterations, int) or iterations <= 0:
@@ -77,7 +75,12 @@ def baum_welch(Observations, Transition, Emission, Initial,
     if Transition.shape[0] != M or Transition.shape[1] != M:
         return None, None
 
-    if Initial.shape[0] != M or Initial.shape[1] != 1:
+    if Initial.shape[0] != M:
+        return None, None
+
+    if len(Initial.shape) == 1:
+        Initial = Initial.reshape((-1, 1))
+    elif Initial.shape[1] != 1:
         return None, None
 
     for _ in range(iterations):
