@@ -14,10 +14,11 @@ def expectation(X, pi, m, S):
     pi: numpy.ndarray (k,) containing the priors for each cluster
     m: numpy.ndarray (k, d) containing the centroid means for each cluster
     S: numpy.ndarray (k, d, d) containing the covariance matrices
-    return:
+    Returns:
         g: numpy.ndarray (k, n) containing the posterior probabilities
            for each data point in each cluster
         l: the total log likelihood
+        or None, None on failure
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None
@@ -43,25 +44,18 @@ def expectation(X, pi, m, S):
     if not np.isclose(np.sum(pi), 1):
         return None, None
 
-    # Calculate the probability density for each cluster
-    # g will be (k, n) where g[i, j] is the likelihood of point j in cluster i
     g = np.zeros((k, n))
 
     for i in range(k):
-        # Calculate PDF for cluster i
         P = pdf(X, m[i], S[i])
         if P is None:
             return None, None
-        # Multiply by prior
         g[i] = pi[i] * P
 
-    # Calculate the total likelihood for each point (sum over clusters)
     total_likelihood = np.sum(g, axis=0)
 
-    # Calculate log likelihood
     l = np.sum(np.log(total_likelihood))
 
-    # Normalize to get posterior probabilities
     g = g / total_likelihood
 
     return g, l
