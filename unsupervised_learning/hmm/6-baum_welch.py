@@ -47,20 +47,23 @@ def baum_welch(Observations, Transition, Emission, Initial,
                iterations=1000):
     """
     Performs the Baum-Welch algorithm for a hidden markov model
-    Observations: numpy.ndarray (T,) containing the index of the observation
+    Observations: numpy.ndarray (T,) containing index of observation
     Transition: numpy.ndarray (M, M) initialized transition probabilities
     Emission: numpy.ndarray (M, N) initialized emission probabilities
     Initial: numpy.ndarray (M, 1) initialized starting probabilities
-    iterations: number of times expectation-maximization should be performed
-    Returns: the converged Transition, Emission, or None, None on failure
+    iterations: number of times EM should be performed
+    Returns: converged Transition, Emission, or None, None on failure
     """
-    if not isinstance(Observations, np.ndarray) or len(Observations.shape) != 1:
+    if (not isinstance(Observations, np.ndarray) or
+            len(Observations.shape) != 1):
         return None, None
 
-    if not isinstance(Transition, np.ndarray) or len(Transition.shape) != 2:
+    if (not isinstance(Transition, np.ndarray) or
+            len(Transition.shape) != 2):
         return None, None
 
-    if not isinstance(Emission, np.ndarray) or len(Emission.shape) != 2:
+    if (not isinstance(Emission, np.ndarray) or
+            len(Emission.shape) != 2):
         return None, None
 
     if not isinstance(Initial, np.ndarray):
@@ -98,11 +101,12 @@ def baum_welch(Observations, Transition, Emission, Initial,
                     xi[i, j, t] = numerator / denominator
 
         gamma = np.sum(xi, axis=1)
-        gamma = np.hstack((gamma,
-                          np.sum(xi[:, :, T-2], axis=1).reshape((-1, 1))))
+        last_gamma = np.sum(xi[:, :, T-2], axis=1).reshape((-1, 1))
+        gamma = np.hstack((gamma, last_gamma))
 
-        Transition = (np.sum(xi, axis=2) /
-                      np.sum(gamma[:, :-1], axis=1).reshape((-1, 1)))
+        num = np.sum(xi, axis=2)
+        den = np.sum(gamma[:, :-1], axis=1).reshape((-1, 1))
+        Transition = num / den
 
         denominator = np.sum(gamma, axis=1).reshape((-1, 1))
         for k in range(N):
