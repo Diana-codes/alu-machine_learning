@@ -22,23 +22,19 @@ def initialize(X, k):
         - S: numpy.ndarray (k, d, d) covariance matrices for each cluster,
         initialized as identity matrices
     """
-    # Validate X first, before unpacking shape
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
-    
-    # Validate k
+
     if not isinstance(k, int) or k <= 0:
         return None, None, None
-    
-    # Now it's safe to unpack shape
+
     n, d = X.shape
-    
-    # Check if k is larger than n
+
     if k > n:
         return None, None, None
-    
+
     pi = np.full((k,), 1 / k)
     m, _ = kmeans(X, k)
     S = np.tile(np.identity(d), (k, 1, 1))
-    
+
     return pi, m, S
